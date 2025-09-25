@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Responsive Calculator — Modern + Classic</title>
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220cc;
+      --glass: rgba(255,255,255,0.04);
+      --accent1: #7ee7c7;
+      --accent2: #6ea8fe;
+      --muted: #9aa6b2;
+      --glass-border: rgba(255,255,255,0.06);
+      --radius: 14px;
+      --shadow: 0 8px 30px rgba(2,6,23,0.6);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#071226 120%);color:#e6eef6}
+
+    .wrap{
+      min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;
+    }
+
+    .calculator{
+      width:100%;max-width:420px;border-radius:var(--radius);background:linear-gradient(180deg,rgba(255,255,255,0.02), rgba(255,255,255,0.01));backdrop-filter: blur(8px);
+      border:1px solid var(--glass-border);box-shadow:var(--shadow);padding:16px;display:grid;grid-template-columns:1fr;gap:16px;overflow:hidden
+    }
+
+    .main{display:flex;flex-direction:column;gap:12px}
+    .brand{display:flex;align-items:center;gap:10px}
+    .logo{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:700;color:#04233a;font-size:16px;box-shadow:0 6px 18px rgba(46,64,83,0.45)}
+    .title{font-weight:600;font-size:16px}
+    .subtitle{font-size:12px;color:var(--muted)}
+
+    .display{border-radius:12px;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border:1px solid var(--glass-border);display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:6px;min-height:82px;word-break:break-all}
+    .calc-history{font-size:12px;color:var(--muted);min-height:18px;opacity:0.95}
+    .calc-output{font-weight:700;font-size:24px;letter-spacing:0.4px;word-break:break-all}
+
+    .keypad{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .btn{background:var(--glass);border:1px solid var(--glass-border);padding:14px;border-radius:12px;text-align:center;font-weight:600;cursor:pointer;user-select:none;transition:transform .06s ease, box-shadow .12s ease;box-shadow:0 6px 18px rgba(2,6,23,0.45);word-break:break-word}
+    .btn:active{transform:translateY(2px)}
+    .btn.func{background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0.02));color:var(--accent2)}
+    .btn.op{background:linear-gradient(180deg,rgba(255,255,255,0.01),rgba(255,255,255,0.02));color:var(--accent1)}
+    .btn.zero{grid-column:span 2}
+
+    .extras{display:flex;flex-direction:column;gap:12px}
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:12px;border-radius:12px;border:1px solid var(--glass-border);min-height:100px;overflow:hidden}
+    .panel h4{margin:0 0 8px 0;font-size:13px}
+    .history-list{font-size:13px;color:var(--muted);max-height:140px;overflow:auto;padding-right:6px;word-break:break-word}
+    .history-item{padding:6px 0;border-bottom:1px dashed rgba(255,255,255,0.06)}
+
+    .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-start}
+    .toggle{flex:1;min-width:70px;text-align:center;display:inline-flex;align-items:center;justify-content:center;padding:8px;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid var(--glass-border);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+    @media (max-width:500px){
+      .calculator{padding:12px;gap:12px}
+      .btn{padding:12px;font-size:14px}
+      .logo{width:36px;height:36px;font-size:14px}
+      .calc-output{font-size:20px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="calculator" role="application" aria-label="Calculator">
+      <div class="main">
+        <div class="brand">
+          <div class="logo">C</div>
+          <div>
+            <div class="title">Classic+ Calculator</div>
+            <div class="subtitle">Responsive • Keyboard friendly • History</div>
+          </div>
+        </div>
+
+        <div class="display" id="display">
+          <div class="calc-history" id="mini">0</div>
+          <div class="calc-output" id="output">0</div>
+        </div>
+
+        <div class="keypad" id="keypad">
+          <button class="btn func" data-key="clear">AC</button>
+          <button class="btn func" data-key="pm">+/-</button>
+          <button class="btn func" data-key="percent">%</button>
+          <button class="btn op" data-key="/">÷</button>
+          <button class="btn" data-key="7">7</button>
+          <button class="btn" data-key="8">8</button>
+          <button class="btn" data-key="9">9</button>
+          <button class="btn op" data-key="*">×</button>
+          <button class="btn" data-key="4">4</button>
+          <button class="btn" data-key="5">5</button>
+          <button class="btn" data-key="6">6</button>
+          <button class="btn op" data-key="-">−</button>
+          <button class="btn" data-key="1">1</button>
+          <button class="btn" data-key="2">2</button>
+          <button class="btn" data-key="3">3</button>
+          <button class="btn op" data-key="+">+</button>
+          <button class="btn zero" data-key="0">0</button>
+          <button class="btn" data-key=".">.</button>
+          <button class="btn op" data-key="=">=</button>
+        </div>
+
+        <div class="panel">
+          <h4>History</h4>
+          <div class="history-list" id="history"></div>
+        </div>
+
+        <div class="panel">
+          <h4>Controls</h4>
+          <div class="controls">
+            <div class="toggle" id="themeToggle">Theme</div>
+            <div class="toggle" id="copyBtn">Copy</div>
+            <div class="toggle" id="clearHist">Clear</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const outputEl = document.getElementById('output');
+      const miniEl = document.getElementById('mini');
+      const keypad = document.getElementById('keypad');
+      const historyEl = document.getElementById('history');
+      const copyBtn = document.getElementById('copyBtn');
+      const clearHistBtn = document.getElementById('clearHist');
+      const themeToggle = document.getElementById('themeToggle');
+
+      let current = '';
+      let history = JSON.parse(localStorage.getItem('calc_history')||'[]');
+      renderHistory();
+      updateDisplay('0');
+
+      function sanitizeForEval(expr){return expr.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-');}
+      function pushHistory(entry){history.unshift(entry);if(history.length>30) history.pop();localStorage.setItem('calc_history', JSON.stringify(history));renderHistory();}
+      function renderHistory(){historyEl.innerHTML=history.map(h=>`<div class="history-item"><strong>${h.e}</strong><div>= ${h.r}</div></div>`).join('');}
+      function updateDisplay(text){outputEl.textContent=text;miniEl.textContent=current||'0';}
+      function calcExpression(expr){try{const safe=sanitizeForEval(expr).replace(/(\d+(?:\.\d+)?)%/g,'($1/100)');const result=Function('return '+safe)();if(!isFinite(result))return 'Error';return (Math.round((result+Number.EPSILON)*1e12)/1e12).toString();}catch{return 'Error'}}
+
+      keypad.addEventListener('click', ev=>{const btn=ev.target.closest('button');if(!btn)return;handleKey(btn.dataset.key)});
+      window.addEventListener('keydown', e=>{if(e.ctrlKey||e.metaKey)return;const k=e.key;if(/^[0-9]$/.test(k))handleKey(k);if(k==='Enter')handleKey('=');if(k==='Backspace')handleKey('back');if(k==='.')handleKey('.');if(['+','-','*','/','%'].includes(k))handleKey(k);if(k==='Escape')handleKey('clear')});
+
+      function handleKey(key){
+        if(key==='clear'){current='';updateDisplay('0');return;}
+        if(key==='back'){current=current.slice(0,-1);updateDisplay(current||'0');return;}
+        if(key==='='){if(!current)return;const res=calcExpression(current);pushHistory({e:current,r:res});current=res;updateDisplay(res);return;}
+        if(key==='percent'){current+='%';updateDisplay(current);return;}
+        if(key==='pm'){if(!current)return;if(current.startsWith('-'))current=current.slice(1);else current='-'+current;updateDisplay(current);return;}
+        current+=key;current=current.replace(/(\d*\.\d*\.)/g,m=>m.slice(0,-1));updateDisplay(current);
+      }
+
+      copyBtn.addEventListener('click',()=>{navigator.clipboard.writeText(outputEl.textContent).then(()=>{copyBtn.textContent='Copied';setTimeout(()=>copyBtn.textContent='Copy',900);});});
+      clearHistBtn.addEventListener('click',()=>{history=[];localStorage.removeItem('calc_history');renderHistory();});
+      themeToggle.addEventListener('click',()=>{document.documentElement.classList.toggle('light')});
+    })();
+  </script>
+</body>
+</html>
